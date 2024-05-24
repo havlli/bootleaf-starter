@@ -9,10 +9,10 @@
 <body>
 <div class="flex w-screen h-screen justify-center items-center">
     <div th:fragment="content">
-        <h1 class="mt-2 text-xl font-bold text-amber-300">Welcome to HTMX with Spring Boot!</h1>
+        <h1 class="mt-2 text-xl font-bold text-blue-950">Welcome to HTMX with Spring Boot!</h1>
         <form hx-post="/submit" hx-target="#response" hx-swap="afterend">
-            <input type="text" name="message" placeholder="Enter a message"/>
-            <button type="submit">Send</button>
+            <input class="border border-amber-800" type="text" name="message" placeholder="Enter a message"/>
+            <button class="border border-amber-800 bg-fuchsia-500" type="submit">Send</button>
         </form>
         <div id="response"></div>
     </div>

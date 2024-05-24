@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "tailwindcss -i ./main.css -o ../resources/static/main.css",
-    "watch": "tailwindcss -i ./main.css --watch"
+    "watch": "tailwindcss -i ./main.css -o ../resources/static/main.css --watch --content ../resources/templates/**/*.html"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.3"
