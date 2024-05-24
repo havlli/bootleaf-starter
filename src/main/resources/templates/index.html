@@ -2,15 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Spring Boot HTMX Example</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.6.0/dist/htmx.min.js"></script>
+    <link th:href="@{/main.css}" rel="stylesheet" />
 </head>
 <body>
-<div th:fragment="content">
-    <h1>Welcome to HTMX with Spring Boot!</h1>
-    <form hx-post="/submit" hx-target="#response" hx-swap="afterend">
-        <input type="text" name="message" placeholder="Enter a message"/>
-        <button type="submit">Send</button>
-    </form>
-    <div id="response"></div>
+<div class="flex w-screen h-screen justify-center items-center">
+    <div th:fragment="content">
+        <h1 class="mt-2 text-xl font-bold text-amber-300">Welcome to HTMX with Spring Boot!</h1>
+        <form hx-post="/submit" hx-target="#response" hx-swap="afterend">
+            <input type="text" name="message" placeholder="Enter a message"/>
+            <button type="submit">Send</button>
+        </form>
+        <div id="response"></div>
+    </div>
 </div>
 </body>
