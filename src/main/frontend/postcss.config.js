@@ -1,5 +1,8 @@
 const postcssConfig = {
-    plugins: [require('autoprefixer')],
+    plugins: [
+        require('tailwindcss'),
+        require('autoprefixer')
+    ],
 };
 
 if (process.env.NODE_ENV === 'production') {
@@ -7,5 +10,7 @@ if (process.env.NODE_ENV === 'production') {
         require('cssnano')({ preset: 'default' })
     );
 }
+
+console.log('PostCSS config loaded', postcssConfig);
 
 module.exports = postcssConfig;
