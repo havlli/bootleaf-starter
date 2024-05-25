@@ -4,7 +4,7 @@
   "scripts": {
     "build": "npm-run-all --parallel build:*",
     "build:html": "node copy-files.js .*\\.html$",
-    "build:css": "mkdirp ../../../target/classes/static/css && postcss ../resources/static/css/*.css -d ../../../target/classes/static/css --verbose",
+    "build:css": "mkdirp ../../../target/classes/static/css && postcss ../resources/static/css/*.css --config ./ -d ../../../target/classes/static/css --verbose",
     "build:js": "mkdirp ../../../target/classes/static/js && babel ../resources/static/js/ --out-dir ../../../target/classes/static/js/",
     "build:svg": "mkdirp ../../../target/classes/static/svg && node copy-files.js .*\\.svg$",
     "build-prod": "cross-env NODE_ENV=production npm-run-all --parallel build-prod:*",

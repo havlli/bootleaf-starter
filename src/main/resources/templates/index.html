@@ -7,12 +7,12 @@
     <link href="/css/main.css" rel="stylesheet" />
 </head>
 <body>
-<div class="flex w-screen h-screen justify-center items-center">
-    <div th:fragment="content" class="bg-emerald-600 p-3 rounded-2xl">
+<div class="flex w-screen h-screen justify-center py-10 bg-gray-800">
+    <div th:fragment="content" class="bg-emerald-600 h-fit p-3 rounded-2xl flex flex-col justify-center items-center">
         <h1 class="mt-2 text-xl font-bold">Welcome to HTMX with Spring Boot!</h1>
-        <form hx-post="/submit" hx-target="#response" hx-swap="afterend">
-            <input class="border border-amber-800" type="text" name="message" placeholder="Enter a message"/>
-            <button class="border border-amber-800 bg-fuchsia-500" type="submit">Send Changed</button>
+        <form hx-post="/submit" hx-target="#response" hx-swap="afterend" class="flex justify-center gap-4 p-4">
+            <input class="border border-amber-800 rounded p-2" type="text" name="message" placeholder="Enter a message"/>
+            <button class="border border-amber-800 rounded p-2 bg-gray-600" type="submit">Send Changed</button>
         </form>
         <div id="response"></div>
     </div>
