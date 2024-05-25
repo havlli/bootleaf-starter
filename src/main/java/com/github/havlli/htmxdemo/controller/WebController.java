@@ -11,7 +11,6 @@ public class WebController {
 
     @PostMapping("/submit")
     public ResponseEntity<String> submit(@RequestParam String message) {
-        System.out.println("submit: " + message);
         return ResponseEntity.ok(message);
     }
 }

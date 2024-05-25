@@ -15,7 +15,9 @@
     <description>htmx-demo</description>
     <properties>
         <java.version>22</java.version>
-        <npm.executable>npm</npm.executable>
+        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
+        <frontend-maven-plugin.nodeVersion>v16.13.1</frontend-maven-plugin.nodeVersion>
+        <frontend-maven-plugin.npmVersion>8.1.2</frontend-maven-plugin.npmVersion>
     </properties>
     <dependencies>
         <dependency>
@@ -32,14 +34,20 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/*.html</exclude>
+                    <exclude>**/*.css</exclude>
+                    <exclude>**/*.js</exclude>
+                    <exclude>**/*.svg</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -48,11 +56,11 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.12.0</version> <!-- Check for the latest version -->
+                <version>${frontend-maven-plugin.version}</version>
                 <configuration>
-                    <nodeVersion>v16.13.0</nodeVersion> <!-- Specify your required Node.js version -->
-                    <npmVersion>8.1.0</npmVersion> <!-- Specify your required npm version -->
-                    <workingDirectory>src/main/frontend</workingDirectory> <!-- Adjust if your front-end code is in another directory -->
+                    <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
+                    <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
+                    <workingDirectory>src/main/frontend</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>
@@ -60,6 +68,10 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
+                        <configuration>
+                            <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
+                            <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>npm install</id>
@@ -83,4 +95,29 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-npm-build</id>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run build-prod</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
