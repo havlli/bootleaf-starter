@@ -3,7 +3,7 @@ const fs = require('fs');
 
 ncp.limit = 16;
 
-ncp('../resources', '../../../target/classes', {
+ncp('../src/main/resources', '../target/classes', {
         filter: (source) => {
             if (fs.lstatSync(source).isDirectory()) {
                 return true;

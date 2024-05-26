@@ -60,7 +60,7 @@
                 <configuration>
                     <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
                     <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
-                    <workingDirectory>src/main/frontend</workingDirectory>
+                    <workingDirectory>node</workingDirectory>
                 </configuration>
                 <executions>
                     <execution>

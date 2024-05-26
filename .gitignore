@@ -34,3 +34,6 @@ build/
 /src/main/frontend/package-lock.json
 /src/main/frontend/node_modules/
 /src/main/frontend/node/
+/node/node_modules/
+/node/package-lock.json
+/node/node/
