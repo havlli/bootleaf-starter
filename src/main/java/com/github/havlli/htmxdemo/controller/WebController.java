@@ -2,6 +2,7 @@ package com.github.havlli.htmxdemo.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -10,7 +11,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class WebController {
 
     @PostMapping("/submit")
-    public ResponseEntity<String> submit(@RequestParam String message) {
-        return ResponseEntity.ok(message);
+    public String submit(@RequestParam String message, Model model) {
+        model.addAttribute("message", message);
+        return "response";
     }
 }
