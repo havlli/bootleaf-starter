@@ -1,1 +1,11 @@
-<div th:text="${message}" class="relative grid select-none items-center whitespace-nowrap rounded-lg border border-indigo-600 py-1 px-2.5 font-sans text-xs font-bold text-indigo-600"></div>
+<div _="on click add .fade-out to me then wait 0.5s then remove me"
+     class="opacity-0 cursor-pointer flex gap-1 select-none items-center justify-center whitespace-nowrap rounded-lg border border-indigo-600 py-1 pl-2.5 pr-1 font-sans text-xs font-bold text-indigo-600">
+    <p th:text="${content}"
+       class="uppercase"></p>
+    <button _="on click add .fade-out to my.parentElement then wait 0.5s then remove my.parentElement"
+            class="relative items-center justify-center h-4 w-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14" class="absolute top-0.5">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+</div>

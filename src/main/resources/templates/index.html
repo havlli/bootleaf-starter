@@ -3,45 +3,65 @@
 <head>
     <title>Spring Boot HTMX Example</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.6.0/dist/htmx.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <link href="/css/main.css" rel="stylesheet"/>
 </head>
 <body>
 <section class="text-gray-600 body-font">
     <div class="container px-5 py-24 mx-auto flex flex-col">
         <div class="lg:w-4/6 mx-auto">
-            <div class="rounded-lg h-64 overflow-hidden">
-                <img alt="content" class="object-cover object-center h-full w-full"
-                     src="https://dummyimage.com/1200x500">
-            </div>
-            <div class="flex flex-col sm:flex-row mt-10">
-                <div class="sm:w-1/3 text-center sm:pr-8 sm:py-8">
-                    <div class="w-20 h-20 rounded-full inline-flex items-center justify-center bg-gray-200 text-gray-400">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                             stroke-width="2" class="w-10 h-10" viewBox="0 0 24 24">
-                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
+            <div class="rounded-lg flex flex-col gap-2 sm:gap-0">
+                <div class="flex flex-col sm:flex-row items-center justify-around gap-1">
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="spring-boot" class="w-56"
+                             th:src="@{/images/spring-boot.avif}">
                     </div>
-                    <div class="flex flex-col items-center text-center justify-center">
-                        <h2 class="font-medium title-font mt-4 text-gray-900 text-lg">Phoebe Caulfield</h2>
-                        <div class="w-12 h-1 bg-indigo-500 rounded mt-2 mb-4"></div>
-                        <p class="text-base">Raclette knausgaard hella meggs normcore williamsburg enamel pin sartorial
-                            venmo tbh hot chicken gentrify portland.</p>
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="thymeleaf" class="w-48 ml-4 mb-2"
+                             th:src="@{/images/thymeleaf.png}">
                     </div>
                 </div>
-                <div class="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-l border-gray-200 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
+                <div class="flex flex-col sm:flex-row items-center justify-around gap-1">
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="htmx" class="w-36"
+                             th:src="@{/images/htmx.png}">
+                    </div>
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="_hyperscript" class="w-56 ml-4"
+                             th:src="@{/images/hyperscript.png}">
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center justify-around gap-1">
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="nodejs" class="w-36 ml-3"
+                             th:src="@{/images/node.png}">
+                    </div>
+                    <div class="w-full flex items-center justify-center">
+                        <img alt="tailwindcss" class="w-56"
+                             th:src="@{/images/tailwindcss.png}">
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row mt-5">
+                <div class="sm:w-1/3 text-center sm:pr-8 sm:py-8">
+                    <div class="flex flex-col items-center text-center justify-center">
+                        <h2 class="font-medium title-font mt-4 text-gray-900 text-lg">Demo Page</h2>
+                        <div class="w-12 h-1 bg-indigo-500 rounded mt-2 mb-4"></div>
+                        <p class="text-base">This page is for basic showcase of htmx, hyperscript, tailwindcss and thymeleaf integration with spring boot.</p>
+                    </div>
+                </div>
+                <div class="sm:w-2/3 sm:pl-8 sm:py-8 sm:border-t-0 border-t mt-4 pt-4 sm:mt-0 text-center sm:text-left">
                     <form hx-post="/submit" hx-target="#response" hx-swap="beforeend"
                           class="flex flex-col justify-center gap-4 p-4">
                         <input class="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                                type="text" name="message" placeholder="Enter a message"/>
                         <button class="items-center w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                type="submit">Submit
-                            <Message></Message>
+                                type="submit">Submit Message
                         </button>
                     </form>
                     <div class="mx-4 my-2 border-t border-gray-200">
-                        <div id="response" class="py-5 flex gap-3 w-full flex-wrap"></div>
+                        <div id="response" class="py-5 flex gap-3 w-full flex-wrap" _="on htmx:load add .fadeIn to detail.elt"></div>
                     </div>
                 </div>
             </div>

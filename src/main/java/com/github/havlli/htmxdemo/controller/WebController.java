@@ -12,7 +12,7 @@ public class WebController {
 
     @PostMapping("/submit")
     public String submit(@RequestParam String message, Model model) {
-        model.addAttribute("message", message);
+        model.addAttribute("content", message);
         return "response";
     }
 }
