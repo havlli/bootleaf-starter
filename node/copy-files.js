@@ -3,12 +3,15 @@ const fs = require('fs');
 
 ncp.limit = 16;
 
+const extensions = process.argv.slice(2);
+const regexPattern = new RegExp(`\\.(${extensions.join('|')})$`, 'i');
+
 ncp('../src/main/resources', '../target/classes', {
         filter: (source) => {
             if (fs.lstatSync(source).isDirectory()) {
                 return true;
             } else {
-                return source.match(process.argv[2]) != null;
+                return regexPattern.test(source);
             }
         }
     }, function (err){

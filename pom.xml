@@ -45,6 +45,12 @@
                     <exclude>**/*.css</exclude>
                     <exclude>**/*.js</exclude>
                     <exclude>**/*.svg</exclude>
+                    <exclude>**/*.png</exclude>
+                    <exclude>**/*.jpg</exclude>
+                    <exclude>**/*.jpeg</exclude>
+                    <exclude>**/*.gif</exclude>
+                    <exclude>**/*.avif</exclude>
+                    <exclude>**/*.webp</exclude>
                 </excludes>
             </resource>
         </resources>
