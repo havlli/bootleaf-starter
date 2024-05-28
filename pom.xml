@@ -16,7 +16,7 @@
     <properties>
         <java.version>22</java.version>
         <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
-        <frontend-maven-plugin.nodeVersion>v16.13.1</frontend-maven-plugin.nodeVersion>
+        <frontend-maven-plugin.nodeVersion>v20.14.0</frontend-maven-plugin.nodeVersion>
         <frontend-maven-plugin.npmVersion>8.1.2</frontend-maven-plugin.npmVersion>
     </properties>
     <dependencies>
@@ -74,6 +74,7 @@
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
+                        <phase>initialize</phase>
                         <configuration>
                             <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
                             <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
@@ -104,6 +105,29 @@
 
     <profiles>
         <profile>
+            <id>init</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.eirslett</groupId>
+                        <artifactId>frontend-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>npm run node setup</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>npm</goal>
+                                </goals>
+                                <configuration>
+                                    <arguments>run setup</arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
             <id>release</id>
             <build>
                 <plugins>
@@ -112,7 +136,7 @@
                         <artifactId>frontend-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>run-npm-build</id>
+                                <id>npm run build</id>
                                 <goals>
                                     <goal>npm</goal>
                                 </goals>

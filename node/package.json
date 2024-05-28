@@ -2,6 +2,7 @@
   "name": "frontend",
   "private": true,
   "scripts": {
+    "setup": "node setup-dirs.js",
     "build": "npm-run-all --parallel build:*",
     "build:html": "mkdirp ../target/classes/templates && node sync-changes.js html",
     "build:css": "mkdirp ../target/classes/static/css && postcss ../src/main/resources/static/css/*.css --config ./ -d ../target/classes/static/css --verbose",
