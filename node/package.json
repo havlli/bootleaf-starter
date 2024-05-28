@@ -3,12 +3,12 @@
   "private": true,
   "scripts": {
     "build": "npm-run-all --parallel build:*",
-    "build:html": "mkdirp ../target/classes/templates && node copy-files.js html",
+    "build:html": "mkdirp ../target/classes/templates && node sync-changes.js html",
     "build:css": "mkdirp ../target/classes/static/css && postcss ../src/main/resources/static/css/*.css --config ./ -d ../target/classes/static/css --verbose",
     "build:js": "mkdirp ../target/classes/static/js && babel ../src/main/resources/static/js/ --out-dir ../target/classes/static/js/",
-    "build:svg": "mkdirp ../target/classes/static/svg && node copy-files.js svg",
-    "build:images": "mkdirp ../target/classes/static/images && node copy-files.js png jpg jpeg gif avif webp",
-    "build:lib": "mkdirp ../target/classes/static/lib && node copy-files.js js",
+    "build:svg": "mkdirp ../target/classes/static/svg && node sync-changes.js svg",
+    "build:images": "mkdirp ../target/classes/static/images && node sync-changes.js png jpg jpeg gif avif webp",
+    "build:lib": "mkdirp ../target/classes/static/lib && node sync-changes.js js",
     "build-prod": "cross-env NODE_ENV=production npm-run-all --parallel build-prod:*",
     "build-prod:html": "npm run build:html",
     "build-prod:css": "npm run build:css",
@@ -17,12 +17,12 @@
     "build-prod:images": "npm run build:images",
     "build-prod:lib": "npm run build:lib",
     "watch": "npm-run-all --parallel watch:*",
-    "watch:html": "onchange \"../src/main/resources/templates/**/*.html\" -- npm-run-all --serial build:css build:html",
-    "watch:css": "onchange \"../src/main/resources/static/css/**/*.css\" -- npm run build:css",
-    "watch:js": "onchange \"../src/main/resources/static/js/**/*.js\" -- npm run build:js",
-    "watch:svg": "onchange \"../src/main/resources/static/svg/**/*.svg\" -- npm run build:svg",
-    "watch:images": "onchange \"../src/main/resources/static/images/**/*.{png,jpg,jpeg,gif,avif,webp}\" -- npm run build:images",
-    "watch:lib": "onchange \"../src/main/resources/static/lib/**/*.js\" -- npm run build:lib",
+    "watch:html": "onchange -v \"../src/main/resources/templates/**/*.html\" -- npm-run-all --serial build:css build:html",
+    "watch:css": "onchange -v \"../src/main/resources/static/css/**/*.css\" -- npm run build:css",
+    "watch:js": "onchange -v \"../src/main/resources/static/js/**/*.js\" -- npm run build:js",
+    "watch:svg": "onchange -v \"../src/main/resources/static/svg/**/*.svg\" -- npm run build:svg",
+    "watch:images": "onchange -v \"../src/main/resources/static/images/**/*.{png,jpg,jpeg,gif,avif,webp}\" -- npm run build:images",
+    "watch:lib": "onchange -v \"../src/main/resources/static/lib/**/*.js\" -- npm run build:lib",
     "watch:serve": "browser-sync start --no-inject-changes --proxy localhost:8080 --files \"../target/classes/templates\" \"../target/classes/static\"",
     "build-watch": "npm-run-all --serial build watch"
   },
@@ -38,6 +38,7 @@
     "onchange": "^7.1.0",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
+    "rimraf": "^5.0.7",
     "tailwindcss": "^3.4.3"
   }
 }
