@@ -9,22 +9,12 @@ if exist prepare.flag (
     exit /b
 )
 
-REM Define the base path
-SET "basePath=src\main\resources\static"
-
-REM Define the subdirectories
-SET "subdirs=css images js lib svg"
-
-REM Create directories if they do not exist
-FOR %%d IN (%subdirs%) DO (
-    SET "fullPath=%basePath%\%%d"
-    IF NOT EXIST "!fullPath!" (
-        mkdir "!fullPath!"
-        echo Created directory: !fullPath!
-    ) ELSE (
-        echo Directory already exists: !fullPath!
-    )
-)
+REM Prompt for confirmation before proceeding
+echo Are you sure you want run this command line script? (Y/N)
+echo Following operations will remove existing .git repository, reinitialize it and run ./mvnw verify!
+set /p UserInput=Type Y to continue, or N to exit:
+if /I "%UserInput%" neq "Y" goto end_script
+echo
 
 REM Remove the existing .git directory
 if exist ".git" (
@@ -48,4 +38,5 @@ REM Create a flag file to indicate that the script has run
 echo prepare script already ran > prepare.flag
 echo Flag file created. This script will not run again.
 
+:end_script
 ENDLOCAL

@@ -11,22 +11,23 @@ if [ -f prepare.flag ]; then
     exit 0
 fi
 
-# Define the base path
-basePath="src/main/resources/static"
+# Ask for user confirmation before proceeding
+echo "Are you sure you want run this bash script? (Y/N)"
+echo "Following operations will remove existing .git repository, reinitialize it and run ./mvnw verify!"
+read -r -n 1 -p "Enter Y to continue or N to abort: " response
+echo
 
-# Define the subdirectories
-subdirs=("css" "images" "js" "lib" "svg")
-
-# Create directories if they do not exist
-for dir in "${subdirs[@]}"; do
-    fullPath="$basePath/$dir"
-    if [ ! -d "$fullPath" ]; then
-        mkdir -p "$fullPath"
-        echo "Created directory: $fullPath"
-    else
-        echo "Directory already exists: $fullPath"
-    fi
-done
+case "$response" in
+    [yY])
+        # If user agrees, continue with the script
+        echo "Proceeding with script..."
+        ;;
+    *)
+        # Any other input means no, so exit the script
+        echo "Script aborted by user."
+        exit 0
+        ;;
+esac
 
 # Remove the existing .git directory
 if [ -d ".git" ]; then
