@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="local" />
+    <option name="HIDE_BANNER" value="true" />
+    <module name="htmx-demo" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.github.havlli.htmxdemo.Application" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="spring &amp; npm" type="CompoundRunConfigurationType">
+    <toRun name="build-watch" type="js.build_tools.npm" />
+    <toRun name="Application" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

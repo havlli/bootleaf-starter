@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Detect the operating system
+case "$(uname -s)" in
+    CYGWIN*|MINGW32*|MSYS*|MINGW*)
+        # Windows systems detected, run Batch script
+        cmd.exe /c prepare.cmd
+        ;;
+    *)
+        # Unix-like system detected, run Bash script
+        ./prepare.sh
+        ;;
+esac
