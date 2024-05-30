@@ -1,4 +1,4 @@
-package com.github.havlli.htmxdemo;
+package com.github.havlli.bootleafstarter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

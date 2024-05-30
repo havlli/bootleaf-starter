@@ -1,4 +1,4 @@
-package com.github.havlli.htmxdemo;
+package com.github.havlli.bootleafstarter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

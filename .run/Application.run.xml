@@ -3,7 +3,7 @@
     <option name="ACTIVE_PROFILES" value="local" />
     <option name="HIDE_BANNER" value="true" />
     <module name="bootleaf-starter" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.github.havlli.htmxdemo.Application" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.github.havlli.bootleafstarter.Application" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
