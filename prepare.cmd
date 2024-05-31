@@ -44,6 +44,8 @@ if /I "%UserInput%" neq "Y" goto end_script
 
 :: Update pom.xml
 echo [%INFO%]
+echo [%INFO%] --- %ESC%32mInitialize project files and directories%ESC%0m ---
+echo [%INFO%]
 echo [%INFO%] Updating pom.xml and run configuration...
 echo [%INFO%]
 powershell -Command "$xml = [xml](Get-Content pom.xml); if($xml.project.groupId) { $xml.project.groupId = '%groupId%'; }; if($xml.project.artifactId) { $xml.project.artifactId = '%artifactId%'; }; if($xml.project.version) { $xml.project.version = '%version%'; }; if($xml.project.name) { $xml.project.name = '%projectName%'; }; $xml.Save('pom.xml')"
@@ -102,7 +104,7 @@ for /R src %%f in (*.java) do (
 )
 
 echo [%INFO%]
-echo [%INFO%] --- %ESC%32mInitializing .git repository%ESC%0m ---
+echo [%INFO%] --- %ESC%32mInitialize .git repository%ESC%0m ---
 echo [%INFO%]
 :: Remove the existing .git directory
 if exist ".git" (
@@ -119,7 +121,7 @@ if errorlevel 1 (
 )
 
 echo [%INFO%]
-echo [%INFO%] --- %ESC%32mStaging files then commit%ESC%0m ---
+echo [%INFO%] --- %ESC%32mStage files then commit%ESC%0m ---
 echo [%INFO%]
 :: Add script files to .gitignore
 echo prepare >> .gitignore
@@ -143,13 +145,13 @@ if errorlevel 1 (
 
 :: Run mvnw verify
 echo [%INFO%]
-echo [%INFO%] --- %ESC%32mDelegating to Maven wrapper%ESC%0m ---
+echo [%INFO%] --- %ESC%32mDelegate to Maven wrapper%ESC%0m ---
 echo [%INFO%]
 call ./mvnw verify
 
 :: Assuming all went well, delete the scripts to prevent rerun
 echo [%INFO%]
-echo [%INFO%] --- %ESC%32mFinalizing setup and cleaning up%ESC%0m ---
+echo [%INFO%] --- %ESC%32mFinalize setup and clean up%ESC%0m ---
 echo [%INFO%]
 echo [%INFO%] Deleting initialization scripts...
 del "prepare.sh"

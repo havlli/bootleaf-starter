@@ -46,8 +46,10 @@ if [[ "${userInput,,}" != "y" ]]; then
     exit 0
 fi
 
-# Update pom.xml
 echo -e "[${INFO}]"
+echo -e "[${INFO}] --- ${ESC}[32mInitialize project files and directories${ESC}[0m ---"
+echo -e "[${INFO}]"
+# Update pom.xml
 echo -e "[${INFO}] Updating pom.xml and run configuration..."
 echo -e "[${INFO}]"
 
@@ -103,9 +105,12 @@ find "src/test/java/com" -type d -empty -delete
 
 echo -e "[${INFO}] Test files successfully initialized"
 
+# Update package in Java files
+find src -type f -name "*.java" -exec sed -i "s/com.github.havlli.bootleafstarter/${groupId}.${artifactId}/g" {} +;
+
 # Remove the existing .git directory
 echo -e "[${INFO}]"
-echo -e "[${INFO}] --- ${ESC}[32mInitializing .git repository${ESC}[0m ---"
+echo -e "[${INFO}] --- ${ESC}[32mInitialize .git repository${ESC}[0m ---"
 echo -e "[${INFO}]"
 if [ -d ".git" ]; then
     rm -rf ".git"
@@ -145,13 +150,13 @@ fi
 
 # Run mvnw verify
 echo -e "[${INFO}]"
-echo -e "[${INFO}] --- ${ESC}[32mDelegating to Maven wrapper${ESC}[0m ---"
+echo -e "[${INFO}] --- ${ESC}[32mDelegate to Maven wrapper${ESC}[0m ---"
 echo -e "[${INFO}]"
 ./mvnw verify
 
 # Assuming all went well, delete the scripts to prevent rerun
 echo -e "[${INFO}]"
-echo -e "[${INFO}] --- ${ESC}[32mFinalizing setup and cleaning up${ESC}[0m ---"
+echo -e "[${INFO}] --- ${ESC}[32mFinalize setup and clean up${ESC}[0m ---"
 echo -e "[${INFO}]"
 echo -e "[${INFO}] Deleting initialization scripts..."
 rm -f "prepare.cmd" "prepare"
