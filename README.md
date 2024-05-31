@@ -29,7 +29,7 @@ These instructions will help you set up a copy of this project and customize it 
    You can specify a new directory name at the time of cloning to immediately differentiate your new project.
 
     ```bash
-    git clone https://github.com/yourusername/BootLeafStarter.git your-new-project-name
+    git clone https://github.com/havlli/bootleaf-starter.git your-new-project-name
     cd your-new-project-name
     ```
 
