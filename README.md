@@ -30,11 +30,11 @@ These instructions will help you set up a copy of this project and customize it 
 
    You have to specify a new directory name corresponding to your new project, then run `prepare` command inside the project.
 
-    ```bash
-    git clone https://github.com/havlli/bootleaf-starter.git your-new-project-name
-    cd your-new-project-name
-    ./prepare
-    ```
+   ```bash
+   git clone https://github.com/havlli/bootleaf-starter.git your-new-project-name
+   cd your-new-project-name
+   ./prepare
+   ```
    
    Running following script will prompt you to enter project metadata then initialize new Git repository, commit initial state and run `./mvnw verify` which will locally install Node.js, npm and required packages.
 
