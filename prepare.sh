@@ -131,6 +131,7 @@ echo -e "[${INFO}]"
 # Add script files to .gitignore
 echo "prepare" >> .gitignore
 echo "prepare.*" >> .gitignore
+echo "HELP.md" >> .gitignore
 
 # Stage files
 git add . &>/dev/null
