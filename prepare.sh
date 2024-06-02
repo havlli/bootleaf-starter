@@ -11,7 +11,7 @@ WARN="${ESC}[33mWARNING${ESC}[0m"
 SUCCESS="${ESC}[32mSUCCESS${ESC}[0m"
 
 # Header
-echo -e "[${INFO}] ------------------------[ ${ESC}[94mConfigure project${ESC}[0m ]-------------------------"
+echo -e "[${INFO}] ------------------------[ ${ESC}[94mBootLeaf Starter${ESC}[0m ]-------------------------"
 echo -e "[${INFO}]"
 echo -e "[${INFO}] Following operations will change file structure, update pom.xml, remove"
 echo -e "[${INFO}] existing .git repository, reinitialize it and run ./mvnw verify!"

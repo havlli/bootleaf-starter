@@ -9,7 +9,7 @@ set "WARN=%ESC%33mWARNING%ESC%0m"
 set "SUCCESS=%ESC%32mSUCCESS%ESC%0m"
 
 :: Header
-echo [%INFO%] ------------------------[ %ESC%94mConfigure project%ESC%0m ]-------------------------
+echo [%INFO%] ------------------------[ %ESC%94mBootLeaf Starter%ESC%0m ]-------------------------
 echo [%INFO%]
 echo [%INFO%] Following operations will change file structure, update pom.xml, remove
 echo [%INFO%] existing .git repository, reinitialize it and run ./mvnw verify!

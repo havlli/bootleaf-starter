@@ -22,44 +22,27 @@ These instructions will help you set up a copy of this project and customize it 
 
 *Note: Node.js is installed with Maven locally, so you can customize which version you need in pom.xml*
 
-### Cloning and Customizing
+### Setting up the project
 
-1. **Clone the Repository with a New Project Name**
+   ***Note: Make sure you are running these commands in plain terminal environment without your IDE cloning\opening the project before the scaffolding script finishes.** For example IDEs like IntelliJ IDEA automatically set module name and generate `.idea` folder with configuration xml files which will have conflicting configuration once the scaffolding script setups your project. In case that happens you have to manually change module name and invalidate caches.*
 
-   You can specify a new directory name at the time of cloning to immediately differentiate your new project.
+   **Clone the Repository and run the scaffolding script**
+
+   You have to specify a new directory name corresponding to your new project, then run `prepare` command inside the project.
 
     ```bash
     git clone https://github.com/havlli/bootleaf-starter.git your-new-project-name
     cd your-new-project-name
-    ```
-
-2. **Customize Project Details**
-
-   Open the `pom.xml` file and change the `<artifactId>`, `<name>`, and any other relevant tags to reflect your new project's name and details.
-
-    ```xml
-    <groupId>com.yourcompany</groupId>
-    <artifactId>your-new-project-name</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>Your New Project Name</name>
-    ```
-
-3. **Initialize Git, Node.js and npm**
-
-   Running following script will initialize new Git repository, commit initial state and run `./mvnw verify` which will locally install Node.js, npm and required packages.
-
-    ```bash
     ./prepare
     ```
-
-   *Note: Scaffolding script is intended to run just once. Script itself adds all the script related files to .gitignore. You can keep the files for reference or safely delete them.*
-
+   
+   Running following script will prompt you to enter project metadata then initialize new Git repository, commit initial state and run `./mvnw verify` which will locally install Node.js, npm and required packages.
 
 ### Running the Development Environment
 
 #### Option 1: IntelliJ IDEA Users
 
-For those using IntelliJ IDEA, run configurations are included in the `.run` directory, and IDEA should automatically detect them. Simply navigate to the Run/Debug configuration controls and run the compounded configuration: `spring & npm`.
+For those using IntelliJ IDEA, run configurations are included in the `.run` directory, and IDEA should automatically detect them. Simply navigate to the Run/Debug configuration controls and run the compounded configuration: `spring & npm`
 
 #### Option 2: Non-IntelliJ IDEA Users
 
@@ -75,7 +58,8 @@ If you're not using IntelliJ IDEA or prefer to run your own custom configuration
    In a second terminal instance, start the live reload process to watch changes:
 
    ```bash
-   cd node | npm run build-watch
+   cd node 
+   npm run build-watch
    ```
 
 After running development environment you are all set to start coding your pages, node part of the configuration will try open your browser with `localhost:3000` that is proxy to the `localhost:8080` using `browser-sync` which will automatically reload the page for you when changes are detected!
