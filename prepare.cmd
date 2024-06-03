@@ -103,6 +103,12 @@ for /R src %%f in (*.java) do (
     powershell -Command "(Get-Content '%%f') -replace 'com.github.havlli.bootleafstarter', '%groupId%.%artifactId%' | Set-Content '%%f'"
 )
 
+:: Update .properties files
+for %%f in (src\main\resources\*.properties) do (
+    echo Processing %%f...
+    powershell -Command "(Get-Content '%%f') -replace 'bootleaf-starter', '!artifactId' | Set-Content '%%f'"
+)
+
 echo [%INFO%]
 echo [%INFO%] --- %ESC%32mInitialize .git repository%ESC%0m ---
 echo [%INFO%]

@@ -108,6 +108,9 @@ echo -e "[${INFO}] Test files successfully initialized"
 # Update package in Java files
 find src -type f -name "*.java" -exec sed -i "s/com.github.havlli.bootleafstarter/${groupId}.${artifactId}/g" {} +;
 
+# Update .properties files
+find src/main/resources -type f -name "*.properties" -exec sed -i "s/bootleaf-starter/${artifactId}/g" {} +;
+
 # Remove the existing .git directory
 echo -e "[${INFO}]"
 echo -e "[${INFO}] --- ${ESC}[32mInitialize .git repository${ESC}[0m ---"
