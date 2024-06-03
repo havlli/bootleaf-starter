@@ -105,8 +105,7 @@ for /R src %%f in (*.java) do (
 
 :: Update .properties files
 for %%f in (src\main\resources\*.properties) do (
-    echo Processing %%f...
-    powershell -Command "(Get-Content '%%f') -replace 'bootleaf-starter', '!artifactId' | Set-Content '%%f'"
+    powershell -Command "(Get-Content '%%f') -replace 'bootleaf-starter', '!artifactId!' | Set-Content '%%f'"
 )
 
 echo [%INFO%]
