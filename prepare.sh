@@ -131,10 +131,11 @@ fi
 echo -e "[${INFO}]"
 echo -e "[${INFO}] --- ${ESC}[32mStage files then commit${ESC}[0m ---"
 echo -e "[${INFO}]"
-# Add script files to .gitignore
+# Add script files to .gitignore and delete initial README.md file
 echo "prepare" >> .gitignore
 echo "prepare.*" >> .gitignore
 echo "HELP.md" >> .gitignore
+rm -f "README.md"
 
 # Stage files
 git add . &>/dev/null

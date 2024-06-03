@@ -128,10 +128,11 @@ if errorlevel 1 (
 echo [%INFO%]
 echo [%INFO%] --- %ESC%32mStage files then commit%ESC%0m ---
 echo [%INFO%]
-:: Add script files to .gitignore
+:: Add script files to .gitignore and delete the initial README.md
 echo prepare >> .gitignore
 echo prepare.* >> .gitignore
 echo HELP.md >> .gitignore
+del "README.md"
 
 :: Stage files
 git add . >nul 2>&1
