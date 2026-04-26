@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev: spring + assets",
+      "type": "shell",
+      "command": "npm run dev",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "verify",
+      "type": "shell",
+      "command": "./mvnw -B -ntp verify",
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "./mvnw -B -ntp test",
+      "problemMatcher": [],
+      "group": { "kind": "test", "isDefault": true }
+    },
+    {
+      "label": "image (OCI)",
+      "type": "shell",
+      "command": "./mvnw -B -ntp spring-boot:build-image",
+      "problemMatcher": []
+    }
+  ]
+}

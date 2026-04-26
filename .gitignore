@@ -29,7 +29,10 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
+!.vscode/extensions.json
 /src/main/frontend/package-lock.json
 /src/main/frontend/node_modules/
 /src/main/frontend/node/

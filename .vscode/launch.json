@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot — Application (local)",
+      "request": "launch",
+      "mainClass": "com.github.havlli.bootleafstarter.Application",
+      "projectName": "bootleaf-starter",
+      "vmArgs": "-Dspring.profiles.active=local",
+      "args": "",
+      "console": "integratedTerminal"
+    }
+  ]
+}
