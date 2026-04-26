@@ -8,10 +8,7 @@
 <body>
 
 <main class="mx-auto max-w-2xl px-6 pb-20">
-    <div th:replace="~{fragments/error-card :: card(
-            404,
-            'Page not found',
-            ${message} ?: 'We couldn''t find what you were looking for. The link may be stale, or the page may have moved.')}"></div>
+    <div th:replace="~{fragments/error-card :: card(404, 'Page not found', ${message} ?: 'We could not find what you were looking for. The link may be stale, or the page may have moved.')}"></div>
 </main>
 
 </body>
