@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layouts/main :: layout(~{::title}, ~{::head/*}, ~{::main})}">
+<head>
+    <title>HTMX patterns · BootLeaf</title>
+</head>
+<body>
+
+<main class="mx-auto max-w-3xl px-6 pb-20">
+
+    <header class="pt-10 sm:pt-16">
+        <p class="font-mono text-xs uppercase tracking-wider text-brand-600 dark:text-brand-300">Showcase</p>
+        <h1 class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">Common HTMX patterns</h1>
+        <p class="mt-3 max-w-2xl text-sm text-gray-600 dark:text-gray-400">
+            Recipes you'll reach for again and again — toast notifications via <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs dark:bg-white/10">HX-Trigger</code>,
+            server-side validation that swaps the form back, click counters, and inline edit-in-place.
+        </p>
+    </header>
+
+    <section class="mt-10 space-y-6">
+
+        <article class="rounded-2xl border border-gray-200 bg-white/70 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold tracking-tight">Server-side validation</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        On error the controller swaps the form back with an error message; on success it returns a chip and fires a toast.
+                    </p>
+                </div>
+                <span class="hidden rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600 sm:inline-block dark:bg-white/10 dark:text-gray-300">
+                    POST /patterns/validate
+                </span>
+            </div>
+            <div class="mt-5">
+                <div th:replace="~{fragments/validate-form :: form}"></div>
+                <div id="validate-result" class="mt-4 flex flex-wrap gap-2"></div>
+            </div>
+        </article>
+
+        <article class="rounded-2xl border border-gray-200 bg-white/70 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold tracking-tight">Click counter</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        Returns the same button rerendered with the new total — the simplest swap recipe.
+                    </p>
+                </div>
+                <span class="hidden rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600 sm:inline-block dark:bg-white/10 dark:text-gray-300">
+                    POST /patterns/click
+                </span>
+            </div>
+            <div class="mt-5">
+                <div th:replace="~{fragments/click :: button}"></div>
+            </div>
+        </article>
+
+        <article class="rounded-2xl border border-gray-200 bg-white/70 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold tracking-tight">Inline edit</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        Click a row to swap it for an input. Submit to save, press Esc to cancel.
+                    </p>
+                </div>
+                <span class="hidden rounded-md bg-gray-100 px-2 py-1 font-mono text-xs text-gray-600 sm:inline-block dark:bg-white/10 dark:text-gray-300">
+                    GET / POST /patterns/note/{id}
+                </span>
+            </div>
+            <ul class="mt-5 divide-y divide-gray-100 dark:divide-white/10">
+                <li class="py-1">
+                    <div th:replace="~{fragments/note :: view(id=1, text='Server-rendered, client-enhanced.')}"></div>
+                </li>
+                <li class="py-1">
+                    <div th:replace="~{fragments/note :: view(id=2, text='Click the value to edit inline.')}"></div>
+                </li>
+                <li class="py-1">
+                    <div th:replace="~{fragments/note :: view(id=3, text='Press Esc or click away to cancel.')}"></div>
+                </li>
+            </ul>
+        </article>
+
+        <article class="rounded-2xl border border-gray-200 bg-white/70 p-6 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-semibold tracking-tight">Toast notifications</h2>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        Submit the validation form successfully — the controller fires <code class="rounded bg-gray-100 px-1.5 py-0.5 font-mono text-xs dark:bg-white/10">HX-Trigger: toast</code> and a hyperscript listener in the layout shows it.
+                    </p>
+                </div>
+                <button type="button"
+                        class="rounded-md border border-gray-200 bg-white/70 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-xs transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200"
+                        _="on click trigger toast(detail: 'Hello from hyperscript!') on body">
+                    Fire client-side
+                </button>
+            </div>
+        </article>
+
+    </section>
+
+    <p class="mt-10 text-center text-xs text-gray-500">
+        <a href="/" class="hover:underline">← Back to home</a>
+    </p>
+</main>
+
+</body>
+</html>

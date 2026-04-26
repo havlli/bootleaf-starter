@@ -3,15 +3,15 @@
       xmlns:th="http://www.thymeleaf.org"
       th:replace="~{layouts/main :: layout(~{::title}, ~{::head/*}, ~{::main})}">
 <head>
-    <title th:text="|${status} ${error} · BootLeaf|">Error · BootLeaf</title>
+    <title>404 Not found · BootLeaf</title>
 </head>
 <body>
 
 <main class="mx-auto max-w-2xl px-6 pb-20">
     <div th:replace="~{fragments/error-card :: card(
-            ${status} ?: 500,
-            ${error} ?: 'Something went wrong',
-            ${message} ?: 'The page you were looking for could not be served.')}"></div>
+            404,
+            'Page not found',
+            ${message} ?: 'We couldn''t find what you were looking for. The link may be stale, or the page may have moved.')}"></div>
 </main>
 
 </body>

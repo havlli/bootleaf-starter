@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<button th:fragment="button"
+        type="button"
+        hx-post="/patterns/click"
+        hx-swap="outerHTML"
+        class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white/70 px-5 py-2.5 text-sm font-medium text-gray-700 shadow-xs transition hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10">
+    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 5v14M5 12h14"/>
+    </svg>
+    <span>Increment</span>
+    <span class="rounded-full bg-brand-100 px-2 py-0.5 font-mono text-xs text-brand-700 dark:bg-brand-900/60 dark:text-brand-200"
+          th:text="${total} ?: 0">0</span>
+</button>
+
+</body>
+</html>

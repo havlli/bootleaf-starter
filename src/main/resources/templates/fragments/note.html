@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="view"
+     th:id="|note-${id}|"
+     th:hx-get="@{/patterns/note/{id}/edit(id=${id})}"
+     hx-swap="outerHTML"
+     hx-trigger="click"
+     class="group flex cursor-text items-center gap-2 rounded-lg border border-transparent px-3 py-2 text-sm transition hover:border-gray-200 hover:bg-white dark:hover:border-white/10 dark:hover:bg-white/5">
+    <span th:text="${text}" class="flex-1 truncate">…</span>
+    <svg class="h-3.5 w-3.5 opacity-0 transition group-hover:opacity-60" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 20h9M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+</div>
+
+<form th:fragment="edit"
+      th:id="|note-${id}|"
+      th:hx-post="@{/patterns/note/{id}(id=${id})}"
+      hx-swap="outerHTML"
+      th:attr="data-cancel-url=@{/patterns/note/{id}(id=${id})}"
+      class="flex items-center gap-2 rounded-lg border border-brand-300 bg-white px-2 py-1.5 dark:border-brand-700 dark:bg-white/5">
+    <input name="text"
+           type="text"
+           th:value="${text}"
+           autocomplete="off"
+           maxlength="120"
+           class="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-400"
+           _="on load me.focus() then me.select()
+              on keydown[key is 'Escape'] from me
+                  set f to closest <form/>
+                  htmx.ajax('GET', f.dataset.cancelUrl, {target: f, swap: 'outerHTML'})"/>
+    <button type="submit"
+            class="rounded-md bg-brand-500 px-2.5 py-1 text-xs font-medium text-white shadow-xs transition hover:bg-brand-600">
+        Save
+    </button>
+</form>
+
+</body>
+</html>

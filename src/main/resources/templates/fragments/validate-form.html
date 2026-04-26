@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<form th:fragment="form"
+      id="validate-form"
+      hx-post="/patterns/validate"
+      hx-target="#validate-result"
+      hx-swap="beforeend"
+      class="flex flex-col gap-2"
+      th:object="${messageForm}"
+      th:with="hasError=${errors != null and errors.hasFieldErrors('message')}">
+    <label for="validate-message" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Message <span class="text-xs text-gray-400">(server-validated)</span>
+    </label>
+    <div class="flex flex-col gap-2 sm:flex-row">
+        <input id="validate-message"
+               type="text"
+               name="message"
+               th:value="*{message}"
+               required
+               autocomplete="off"
+               maxlength="60"
+               placeholder="Try empty, &gt;60 chars, or &lt;script&gt;"
+               th:classappend="${hasError} ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/30' : 'border-gray-300 focus:border-brand-500 focus:ring-brand-500/30'"
+               class="w-full rounded-lg border bg-white px-3.5 py-2.5 text-sm shadow-xs outline-none placeholder:text-gray-400 focus:ring-2 dark:bg-white/5 dark:placeholder:text-gray-500"/>
+        <button type="submit"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-linear-to-b from-brand-500 to-brand-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:from-brand-400 hover:to-brand-500 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60">
+            Validate
+        </button>
+    </div>
+    <p th:if="${hasError}"
+       th:text="${errors.getFieldError('message').defaultMessage}"
+       class="text-xs text-rose-600 dark:text-rose-400">
+        Validation error.
+    </p>
+</form>
+
+</body>
+</html>

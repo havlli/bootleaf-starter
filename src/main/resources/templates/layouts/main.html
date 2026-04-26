@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(title, head, content)"
+      class="h-full">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta name="color-scheme" content="light dark"/>
+    <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)"/>
+    <meta name="theme-color" content="#0b0b12" media="(prefers-color-scheme: dark)"/>
+    <meta name="description"
+          th:content="${pageDescription} ?: 'Spring Boot + Thymeleaf + HTMX + _hyperscript + Tailwind CSS v4 starter.'"/>
+    <title th:replace="${title}">BootLeaf</title>
+    <link rel="icon" type="image/svg+xml" th:href="@{/favicon.svg}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <script defer th:src="@{/lib/htmx.2.0.10.min.js}"></script>
+    <script defer th:src="@{/lib/_hyperscript.0.9.14.min.js}"></script>
+    <script>
+        (() => {
+            const stored = localStorage.getItem('theme');
+            const dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.classList.toggle('dark', dark);
+        })();
+    </script>
+    <th:block th:replace="${head} ?: ~{}"/>
+</head>
+<body class="min-h-full bg-surface text-ink dark:bg-surface-dark dark:text-ink-dark">
+
+<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute -top-40 -left-40 h-144 w-xl rounded-full bg-brand-400/30 blur-3xl dark:bg-brand-700/30"></div>
+    <div class="absolute -bottom-40 -right-40 h-144 w-xl rounded-full bg-fuchsia-400/20 blur-3xl dark:bg-fuchsia-700/20"></div>
+</div>
+
+<header class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+    <a href="/" class="flex items-center gap-2 font-semibold tracking-tight">
+        <span class="grid h-8 w-8 place-items-center rounded-lg bg-linear-to-br from-brand-500 to-fuchsia-500 text-white shadow-sm">
+            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+        </span>
+        <span>BootLeaf</span>
+    </a>
+
+    <nav class="flex items-center gap-2">
+        <a th:href="@{/patterns}"
+           class="hidden rounded-md px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 sm:inline-block dark:text-gray-300 dark:hover:bg-white/5">
+            Patterns
+        </a>
+        <a th:href="@{/actuator/health}"
+           class="hidden rounded-md px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 sm:inline-block dark:text-gray-300 dark:hover:bg-white/5">
+            Health
+        </a>
+        <button type="button"
+                aria-label="Toggle dark mode"
+                class="grid h-9 w-9 place-items-center rounded-md text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+                _="on click
+                    toggle .dark on document.documentElement
+                    then if document.documentElement matches '.dark'
+                        set localStorage.theme to 'dark'
+                    else
+                        set localStorage.theme to 'light'
+                    end">
+            <svg class="h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+        </button>
+    </nav>
+</header>
+
+<th:block th:replace="${content}"/>
+
+<div id="toast-host"
+     class="pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4"
+     _="on toast(detail) from body
+            make a <div.fade-in.pointer-events-auto.rounded-lg.bg-gray-900/95.px-4.py-2.text-sm.text-white.shadow-lg.backdrop-blur.dark:bg-white.dark:text-gray-900/>
+            put detail into it
+            put it at the end of me
+            wait 2.4s
+            add .fade-out to it
+            wait 220ms
+            remove it"></div>
+
+<footer class="mx-auto max-w-6xl px-6 pb-10 text-center text-xs text-gray-500 dark:text-gray-500">
+    Built with Spring Boot, Thymeleaf, HTMX, _hyperscript, and Tailwind CSS.
+</footer>
+
+</body>
+</html>

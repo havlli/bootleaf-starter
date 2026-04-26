@@ -43,10 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>nz.net.ultraq.thymeleaf</groupId>
-            <artifactId>thymeleaf-layout-dialect</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.wimdeblauwe</groupId>
             <artifactId>htmx-spring-boot</artifactId>
             <version>${htmx-spring-boot.version}</version>
