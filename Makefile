@@ -36,7 +36,7 @@ create: ## one-command bootstrap: make create DIR=my-app [ARGS='--yes --template
 	@bash scripts/create.sh $(DIR) $(ARGS)
 
 up: ## docker compose up (builds the OCI image first if needed)
-	@if [ ! -f target/*.jar ] 2>/dev/null; then $(MVN) -DskipTests package; fi
+	@ls target/*.jar >/dev/null 2>&1 || $(MVN) -DskipTests package
 	@docker compose up -d --build
 	@echo 'browse to http://localhost:$${HTTP_PORT:-8080}'
 

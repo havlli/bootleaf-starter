@@ -8,10 +8,16 @@ services:
       dockerfile_inline: |
         # Pulled in case the user runs `docker compose up --build` before
         # `./mvnw spring-boot:build-image`. The Spring Boot Maven plugin
-        # produces a richer image (CDS, layered jar) — prefer that for prod.
+        # produces a richer image (CDS, layered jar, non-root) — prefer
+        # that for prod. This Dockerfile is for the dev/demo path only.
         FROM eclipse-temurin:21-jre AS runtime
+        RUN apt-get update \
+         && apt-get install -y --no-install-recommends curl \
+         && rm -rf /var/lib/apt/lists/* \
+         && useradd --system --uid 10001 --create-home spring
         WORKDIR /app
         COPY target/*.jar /app/app.jar
+        USER spring
         EXPOSE 8080
         ENTRYPOINT ["java", "-jar", "/app/app.jar"]
     pull_policy: build
@@ -21,7 +27,7 @@ services:
     expose:
       - "8080"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health"]
       interval: 10s
       timeout: 3s
       retries: 6

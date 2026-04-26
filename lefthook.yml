@@ -13,14 +13,18 @@ pre-commit:
       stage_fixed: true
     properties-format:
       glob: "src/main/resources/*.properties"
+      # Portable trailing-whitespace check (BSD + GNU grep compatible).
+      # `grep -E` with a real tab byte avoids the GNU-only `grep -P` flag,
+      # which silently exits 0 on macOS BSD grep.
       run: |
+        bad=0
         for f in {staged_files}; do
-          # warn if non-UTF-8 or trailing whitespace
-          grep -nP '[ \t]+$' "$f" && {
+          if grep -nE "[ $(printf '\t')]+$" "$f"; then
             echo "trailing whitespace in $f" >&2
-            exit 1
-          } || true
+            bad=1
+          fi
         done
+        exit $bad
 
 pre-push:
   commands:
