@@ -1,0 +1,13 @@
+# Toolchain pinned for this project. Run `mise install` to provision.
+# https://mise.jdx.dev
+#
+# `mise` automatically sets JAVA_HOME, MAVEN_HOME, and PATH when the
+# project directory is active. Run `mise trust` once after cloning.
+
+[tools]
+java = "temurin-21.0.10+7.0.LTS"
+maven = "3.9.15"
+node = "24.15.0"
+
+[settings]
+auto_install = false

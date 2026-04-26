@@ -36,3 +36,10 @@ build/
 /node/node_modules/
 /node/package-lock.json
 /node/node/
+
+.DS_Store
+.claude/
+
+### mise ###
+.mise.local.toml
+.mise/

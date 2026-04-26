@@ -1,3 +1,13 @@
+## Toolchain
+
+JDK / Maven / Node versions are pinned in `mise.toml`. After cloning:
+
+```bash
+mise trust && mise install
+```
+
+You can also stick with the bundled Maven wrapper (`./mvnw`) and let `frontend-maven-plugin` provision Node — `mise` is a quality-of-life addition, not a hard requirement.
+
 ## Running the development environment
 
 ### IntelliJ IDEA

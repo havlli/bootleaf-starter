@@ -9,6 +9,7 @@ Designed to be cloned, scaffolded with the included `prepare` script, and made y
 | Layer        | Technology                                                                                          |
 |--------------|-----------------------------------------------------------------------------------------------------|
 | Backend      | [Spring Boot](https://spring.io/projects/spring-boot) **4.0** on Java **21** (virtual threads on)   |
+| Toolchain    | Pinned via [mise](https://mise.jdx.dev) (`mise.toml`): Temurin 21, Maven 3.9, Node 24               |
 | Templates    | [Thymeleaf](https://www.thymeleaf.org/) (server-side, with HTMX-friendly fragment routing)          |
 | Interactivity| [HTMX](https://htmx.org/) **2.0** + [_hyperscript](https://hyperscript.org/) **0.9**                |
 | Styling      | [Tailwind CSS](https://tailwindcss.com/) **v4** (CSS-first config, standalone CLI)                  |
@@ -28,10 +29,18 @@ Designed to be cloned, scaffolded with the included `prepare` script, and made y
 
 ### Prerequisites
 
-- **Java 21+**
 - **Git**
+- A version manager that reads `mise.toml` — [mise](https://mise.jdx.dev) recommended (also works with `asdf`)
+  - …or just install **JDK 21**, **Maven 3.9+**, and **Node 24 LTS** manually
 
-> Node 24 / npm 11 are downloaded locally by the Maven build via the `frontend-maven-plugin` — no global install required.
+The exact toolchain (JDK / Maven / Node versions) is pinned in [`mise.toml`](mise.toml). With `mise` installed:
+
+```bash
+mise trust    # one-time, after cloning
+mise install  # provisions Temurin 21, Maven 3.9.15, Node 24.15.0
+```
+
+`mise` will then auto-set `JAVA_HOME`, `MAVEN_HOME`, and `PATH` whenever you `cd` into the project. The Maven wrapper (`./mvnw`) and `frontend-maven-plugin` continue to work as a fallback for contributors who don't use a version manager — `frontend-maven-plugin` will download Node 24 / npm 11 on demand.
 
 ### Cloning and scaffolding
 
