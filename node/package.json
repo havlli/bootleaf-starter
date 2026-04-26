@@ -5,19 +5,19 @@
   "scripts": {
     "prepare": "node setup-dirs.js",
     "build": "npm-run-all --parallel build:*",
-    "build:css": "tailwindcss -i ../src/main/resources/static/css/main.css -o ../target/classes/static/css/main.css",
+    "build:css": "tailwindcss -i styles.css -o ../target/classes/static/css/main.css",
     "build:html": "cpx \"../src/main/resources/templates/**/*.html\" ../target/classes/templates",
     "build:static": "cpx \"../src/main/resources/static/**/*.{js,svg,png,jpg,jpeg,gif,avif,webp,ico,woff,woff2}\" ../target/classes/static",
-    "build:prod": "npm-run-all --parallel build:prod:*",
-    "build:prod:css": "tailwindcss -i ../src/main/resources/static/css/main.css -o ../target/classes/static/css/main.css --minify",
-    "build:prod:html": "npm run build:html",
-    "build:prod:static": "npm run build:static",
+    "prod": "npm-run-all --parallel prod:*",
+    "prod:css": "tailwindcss -i styles.css -o ../target/classes/static/css/main.css --minify",
+    "prod:html": "npm run build:html",
+    "prod:static": "npm run build:static",
     "watch": "npm-run-all --parallel watch:*",
-    "watch:css": "tailwindcss -i ../src/main/resources/static/css/main.css -o ../target/classes/static/css/main.css --watch",
+    "watch:css": "tailwindcss -i styles.css -o ../target/classes/static/css/main.css --watch",
     "watch:html": "cpx \"../src/main/resources/templates/**/*.html\" ../target/classes/templates --watch",
     "watch:static": "cpx \"../src/main/resources/static/**/*.{js,svg,png,jpg,jpeg,gif,avif,webp,ico,woff,woff2}\" ../target/classes/static --watch",
     "watch:serve": "browser-sync start --no-inject-changes --proxy localhost:8080 --files \"../target/classes/templates/**/*.html\" \"../target/classes/static/**/*\"",
-    "build:watch": "npm-run-all --serial build watch"
+    "dev": "npm-run-all --serial build watch"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.4",

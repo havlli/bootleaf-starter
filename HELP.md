@@ -15,7 +15,7 @@ Two terminals:
 
 ```bash
 # Tailwind v4 CLI + cpx2 watchers + browser-sync proxy
-cd node && npm run build:watch
+cd node && npm run dev
 ```
 
 Open **http://localhost:3000** — browser-sync proxies to `localhost:8080` and reloads on changes under `target/classes/templates` and `target/classes/static`.

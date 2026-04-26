@@ -66,7 +66,7 @@ Two terminals:
 
 ```bash
 # 2. Tailwind + asset watcher + browser-sync proxy
-cd node && npm run build:watch
+cd node && npm run dev
 ```
 
 Browse to **http://localhost:3000** — browser-sync proxies to Spring on `:8080` and reloads the page whenever a watched file changes.
@@ -77,7 +77,7 @@ Browse to **http://localhost:3000** — browser-sync proxies to Spring on `:8080
 ./mvnw -Prelease clean package
 ```
 
-The `release` profile runs `npm run build:prod`, which builds CSS through the Tailwind v4 CLI with `--minify`.
+The `release` profile runs `npm run prod`, which builds CSS through the Tailwind v4 CLI with `--minify`.
 
 ## Project layout
 
@@ -92,7 +92,6 @@ src/main/
     ├── application.properties
     ├── application-local.properties
     ├── static/
-    │   ├── css/main.css            # Tailwind v4 entry: @import "tailwindcss" + @theme
     │   ├── favicon.svg
     │   ├── images/                 # raster brand logos
     │   ├── js/                     # your vanilla JS (no transpile step)
@@ -106,6 +105,7 @@ src/main/
 
 node/
 ├── package.json                    # @tailwindcss/cli, cpx2, browser-sync, npm-run-all2
+├── styles.css                      # Tailwind v4 entry: @import "tailwindcss" + @theme + @utility
 └── setup-dirs.js                   # ensures static/ and target/ dirs exist before watch
 ```
 
