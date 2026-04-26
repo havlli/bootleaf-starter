@@ -1,0 +1,29 @@
+# Auto-detect text files and normalize line endings to LF in the repo
+* text=auto eol=lf
+
+# Shell + Maven wrapper must always be LF, even on Windows checkouts
+mvnw         text eol=lf
+*.sh         text eol=lf
+
+# Windows-only artefacts keep CRLF
+*.cmd        text eol=crlf
+*.bat        text eol=crlf
+
+# Force binary handling (no diff, no LF rewrite)
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.svg        text
+*.woff       binary
+*.woff2      binary
+*.ttf        binary
+*.jar        binary
+
+# Exclude generated assets and reports from GitHub language stats / diffs
+src/main/resources/static/css/main.css   linguist-generated=true
+src/main/resources/static/lib/**         linguist-vendored=true
+target/**                                linguist-generated=true
+node/**                                  linguist-vendored=true
+node_modules/**                          linguist-vendored=true
