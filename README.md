@@ -39,8 +39,8 @@ That single line clones, scaffolds (your group/artifact/version), installs the d
 - **Zero-config dark mode** with `prefers-color-scheme` + a click-to-toggle button (persisted in `localStorage`).
 - **HTTP/2, response compression, and content-versioned static assets** turned on by default in `application.properties`.
 - **Virtual threads** enabled (`spring.threads.virtual.enabled=true`) for free request throughput on Java 21.
-- **Comprehensive test suite** — controller slice tests, validation unit tests, full-stack integration tests with `RestTestClient`. 35+ tests cover the golden path and HTMX edge cases.
-- **`prepare` scaffolding script** that renames packages, rewrites `pom.xml`, reinitialises git, and runs `mvnw verify` in one shot.
+- **Comprehensive test suite** — controller slice tests, validation unit tests, full-stack integration tests with `RestTestClient`. 30+ tests cover the golden path and HTMX edge cases.
+- **One-command bootstrap** (`bash <(curl …)` / `make create` / `./prepare`) that renames packages, rewrites `pom.xml`, reinitialises git, and runs `mvnw verify` in one shot — with `--template api-only` for a JSON-only variant.
 - **CI out of the box** — GitHub Actions workflow runs build, tests, Jacoco, and uploads coverage; Dependabot keeps Maven, Actions, and npm deps fresh.
 
 ## Getting Started
@@ -112,7 +112,7 @@ What gets rewritten: `pom.xml` coordinates (never dependency coords), `.run/Appl
 
 `--template api-only` additionally strips the frontend pipeline: removes Thymeleaf, htmx-spring-boot, the `frontend-maven-plugin`, the `node/`, `templates/`, and `static/` folders, and drops the view classes/tests in favour of a minimal `/api/ping` REST controller and `@WebMvcTest` slice.
 
-After a successful run the scaffolder removes `prepare*` and itself. The legacy `prepare`, `prepare.sh`, and `prepare.cmd` files are thin shims that forward all flags to the Node scaffolder, so muscle memory still works.
+After a successful run the scaffolder removes `prepare*`, `scripts/create.sh`, and `scripts/scaffold.mjs` itself, so the new project doesn't carry the bootstrap machinery. The legacy `prepare`, `prepare.sh`, and `prepare.cmd` files are thin shims that forward all flags to the Node scaffolder, so muscle memory still works.
 
 ### Running the dev environment
 
