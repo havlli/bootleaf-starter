@@ -259,8 +259,9 @@ function rewriteFiles(meta) {
     if (existsSync(pomPath)) {
         let pom = readFile(pomPath);
         // Bump version first, while the bootleaf-starter anchor is still present.
+        // Match any current version literal so this still works after a manual bump.
         pom = pom.replace(
-            /(<artifactId>bootleaf-starter<\/artifactId>\s*<version>)0\.0\.1-SNAPSHOT(<\/version>)/,
+            /(<artifactId>bootleaf-starter<\/artifactId>\s*<version>)[^<]+(<\/version>)/,
             `$1${meta.version}$2`
         );
         pom = pom.replace(
@@ -352,7 +353,10 @@ function applyApiOnlyTemplate(meta) {
     drop(/\s*<htmx-spring-boot\.version>[^<]+<\/htmx-spring-boot\.version>/g, "htmx-spring-boot.version property");
     // Drop the entire frontend-maven-plugin block + the resources <excludes> for HTML/CSS/etc.
     drop(/\s*<plugin>\s*<groupId>com\.github\.eirslett<\/groupId>[\s\S]*?<\/plugin>/g, "frontend-maven-plugin");
-    drop(/\s*<resources>[\s\S]*?<\/resources>/g, "frontend resource excludes");
+    // Anchor on the frontend-excludes resource block specifically (matches the
+    // <directory>src/main/resources</directory> + the **/*.html etc. excludes)
+    // so a future custom <resources> block isn't accidentally nuked.
+    drop(/\s*<resources>\s*<resource>\s*<directory>src\/main\/resources<\/directory>\s*<excludes>[\s\S]*?<\/excludes>\s*<\/resource>\s*<\/resources>/g, "frontend resource excludes");
     drop(/\s*<frontend-maven-plugin\.[^>]+>[^<]+<\/frontend-maven-plugin\.[^>]+>/g, "frontend-maven-plugin properties");
     drop(/\s*<profile>\s*<id>release<\/id>[\s\S]*?<\/profile>/g, "release profile (frontend prod)");
     // Replace project description with an api-focused one

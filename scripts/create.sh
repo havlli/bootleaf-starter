@@ -65,8 +65,20 @@ if [ -e "$TARGET" ]; then
     exit 1
 fi
 
+# Best-effort cleanup if anything below blows up, so the user isn't left with
+# a half-scaffolded directory. Cleared at the end on success.
+ABORT_CLEANUP=1
+cleanup_on_error() {
+    if [ "${ABORT_CLEANUP:-0}" = "1" ] && [ -d "$TARGET" ]; then
+        warn "aborting — removing partial scaffold at $TARGET"
+        rm -rf "$TARGET"
+    fi
+}
+trap cleanup_on_error EXIT
+
 say "Cloning $REPO_URL@$REF into $TARGET"
-git clone --depth=1 --branch "$REF" "$REPO_URL" "$TARGET"
+# `--` guards against argument-injection if BOOTLEAF_REPO_URL/REF are user-set.
+git clone --depth=1 --branch "$REF" -- "$REPO_URL" "$TARGET"
 cd "$TARGET"
 
 # Drop the upstream history so the new project gets a fresh log. The scaffolder
@@ -86,6 +98,7 @@ git init -q
 git add -A
 git commit -q -m "chore: initial scaffold from bootleaf-starter" || true
 
+ABORT_CLEANUP=0
 ok "Project ready at $(pwd)"
 cat <<EOF
 
