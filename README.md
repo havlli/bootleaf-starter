@@ -74,12 +74,18 @@ The scaffolder ([`scripts/scaffold.mjs`](scripts/scaffold.mjs), Node 20+) is **i
 
 | Flag                | Effect                                                                 |
 |---------------------|------------------------------------------------------------------------|
-| `--dry-run`         | Print every move/write — change nothing                                |
-| `--keep-git`        | Rename project but preserve existing `.git` history (no fresh init)    |
-| `--skip-verify`     | Skip the trailing `./mvnw verify`                                      |
-| `--yes`             | Non-interactive; combine with `--group-id`, `--artifact-id`, etc.      |
+| `--dry-run`              | Print every move/write — change nothing                                |
+| `--keep-git`             | Rename project but preserve existing `.git` history (no fresh init)    |
+| `--skip-verify`          | Skip the trailing `./mvnw verify`                                      |
+| `--skip-badge-rewrite`   | Leave README badge URLs pointing at `havlli/bootleaf-starter`          |
+| `--no-codecov`           | Strip the Codecov badge from README (use until you wire Codecov)       |
+| `--template <kind>`      | `fullstack` (default) or `api-only` (no Thymeleaf/HTMX/Tailwind/Node)  |
+| `--yes`                  | Non-interactive; combine with `--group-id`, `--artifact-id`, etc.      |
+| `--help`                 | Show usage and exit                                                    |
 
 What gets rewritten: `pom.xml` coordinates (never dependency coords), `.run/Application.run.xml`, source + test packages, `application*.properties`, and the README's title + GitHub badge URLs (so `acme/widget` shows green CI / Codecov badges immediately after you push).
+
+`--template api-only` additionally strips the frontend pipeline: removes Thymeleaf, htmx-spring-boot, the `frontend-maven-plugin`, the `node/`, `templates/`, and `static/` folders, and drops the view classes/tests in favour of a minimal `/api/ping` REST controller and `@WebMvcTest` slice.
 
 After a successful run the scaffolder removes `prepare*` and itself. The legacy `prepare`, `prepare.sh`, and `prepare.cmd` files are thin shims that forward all flags to the Node scaffolder, so muscle memory still works.
 
@@ -97,6 +103,10 @@ Browse to **http://localhost:3000** — browser-sync proxies to Spring on `:8080
 #### IntelliJ IDEA
 
 Run configurations live under `.run/`. Use the compound **`spring & npm`** to start Spring Boot and the watcher in one click.
+
+#### VS Code
+
+[`.vscode/launch.json`](.vscode/launch.json) ships a Java debug profile (Spring `local` profile pre-set) and [`.vscode/tasks.json`](.vscode/tasks.json) wires `npm run dev`, `verify`, `test`, and the OCI image build into the command palette. [`.vscode/extensions.json`](.vscode/extensions.json) recommends the Java/Spring/Tailwind/HTMX extension bundle on first open.
 
 #### Two-terminal fallback
 
@@ -122,6 +132,45 @@ The Spring Boot Maven plugin can build an OCI image without a `Dockerfile`:
 
 ```bash
 ./mvnw spring-boot:build-image
+```
+
+### Docker Compose (app + Caddy)
+
+For collaborators without JDK 21 on their machine — or to demo the patterns page behind a real reverse proxy:
+
+```bash
+make up         # builds the jar if needed, runs `docker compose up -d --build`
+# browse to http://localhost:8080  (override with HTTP_PORT=9000 make up)
+make logs       # tail compose logs
+make down       # tear down
+```
+
+[`compose.yaml`](compose.yaml) ships a two-service stack: the Spring Boot app (built via an inline `Dockerfile` from `target/*.jar`) plus a Caddy reverse proxy that gzip/zstd-encodes responses and adds `Cache-Control: immutable` headers for content-versioned static assets. The Spring service exposes an Actuator-backed health check; Caddy waits for it to go green before accepting traffic.
+
+### Makefile facade
+
+A thin Makefile wraps the most common verbs so non-npm folks (and CI scripts) can run things without remembering Maven goal flags:
+
+```bash
+make            # list all targets
+make dev        # npm run dev (Spring + Tailwind + browser-sync)
+make test       # ./mvnw test
+make verify     # ./mvnw verify (Jacoco gate)
+make image      # OCI image via spring-boot:build-image
+make scaffold   # interactive ./prepare
+make hooks      # install lefthook git hooks
+```
+
+### Git hooks (lefthook)
+
+Optional but recommended. [`lefthook.yml`](lefthook.yml) wires:
+
+- **pre-commit** (fast): `./mvnw test-compile` (offline, parallel) + a trailing-whitespace check on `*.properties`.
+- **pre-push** (slow): full `./mvnw verify` so the local gate matches CI.
+
+```bash
+brew install lefthook   # or: go install github.com/evilmartians/lefthook@latest
+make hooks              # installs the .git/hooks shims
 ```
 
 ## Project layout
@@ -198,13 +247,10 @@ node/
 
 Honest list of what could still be smoother — open to PRs:
 
-- **Single root command for everything.** `npm run dev` already wraps spring-boot:run + asset watcher; could extend to a `make`-style facade (`make dev / test / image`) for non-npm folks.
-- **Workflow badge URL aliases.** The scaffolder rewrites `havlli/bootleaf-starter` → `<owner>/<repo>` in the README, but Codecov stays grey until the user actually wires Codecov for their fork. Worth a `--no-codecov` flag that strips that badge.
-- **Per-IDE run configs.** Only IntelliJ `.run/` ships. VS Code `launch.json` and a JetBrains Fleet equivalent would lift the IDE-specific tax.
-- **Docker Compose for collaborators without JDK 21.** A 10-line `compose.yaml` with the OCI image and a Caddy proxy would let teammates `docker compose up` and demo the patterns page without installing Java.
 - **Test data builders.** The `MessageForm` validation is well-covered, but as the project grows a `*Fixtures` builder pattern (or `instancio`) keeps test setup terse.
-- **Pre-commit hooks.** A `lefthook.yml` running `./mvnw -q -DskipITs test` + a fast formatter (`prettier` for templates, `palantir-java-format`) would catch regressions before push.
-- **`./prepare --template` modes.** Future work could ship preset profiles ("api-only" strips Thymeleaf/Tailwind, "fullstack" leaves everything as-is).
+- **Formatter in pre-commit.** Lefthook currently runs `test-compile` + a properties-whitespace check; adding `palantir-java-format` (Java) and `prettier` (templates/CSS) would normalise style end-to-end.
+- **JetBrains Fleet run configs.** IntelliJ `.run/` and VS Code `.vscode/` ship; Fleet still needs a hand-rolled task graph.
+- **More `--template` presets.** Beyond `fullstack` and `api-only`, a `worker` (no web stack, just `@Scheduled` jobs + Actuator) preset would be useful for batch services.
 
 ## Contributions
 
