@@ -11,6 +11,6 @@ public class WebController {
     @PostMapping("/submit")
     public String submit(@RequestParam String message, Model model) {
         model.addAttribute("content", message);
-        return "response";
+        return "fragments/chip :: chip";
     }
 }
