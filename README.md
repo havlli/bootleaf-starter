@@ -58,42 +58,55 @@ mise install  # provisions Temurin 21, Maven 3.9.15, Node 24.15.0
 
 ### Cloning and scaffolding
 
-> Run the scaffolding step in a plain terminal **before** opening the project in an IDE. IntelliJ in particular will eagerly write `.idea/` metadata that conflicts with the rename the script performs.
+> Run scaffolding in a plain terminal **before** opening the project in an IDE — IntelliJ will eagerly write `.idea/` metadata that fights the rename.
 
 ```bash
 git clone https://github.com/havlli/bootleaf-starter.git your-new-project-name
 cd your-new-project-name
-./prepare
+./prepare                    # interactive
+# or, fully non-interactive:
+./prepare --yes \
+  --group-id com.acme --artifact-id widget --version 1.0.0 \
+  --name "Widget Service" --github-owner acme --github-repo widget
 ```
 
-The script prompts for `groupId`, `artifactId`, `version`, and project name, then:
+The scaffolder ([`scripts/scaffold.mjs`](scripts/scaffold.mjs), Node 20+) is **idempotent**, **dry-runnable**, and rewrites everything in one shot:
 
-1. Rewrites `pom.xml` and the IntelliJ run config.
-2. Moves source/test packages (recursively — including `controller/`, `web/`, `config/`).
-3. Removes the cloned git history and re-initialises a fresh repo with an initial commit.
-4. Runs `./mvnw verify` (which provisions Node/npm and produces a first build with coverage).
+| Flag                | Effect                                                                 |
+|---------------------|------------------------------------------------------------------------|
+| `--dry-run`         | Print every move/write — change nothing                                |
+| `--keep-git`        | Rename project but preserve existing `.git` history (no fresh init)    |
+| `--skip-verify`     | Skip the trailing `./mvnw verify`                                      |
+| `--yes`             | Non-interactive; combine with `--group-id`, `--artifact-id`, etc.      |
+
+What gets rewritten: `pom.xml` coordinates (never dependency coords), `.run/Application.run.xml`, source + test packages, `application*.properties`, and the README's title + GitHub badge URLs (so `acme/widget` shows green CI / Codecov badges immediately after you push).
+
+After a successful run the scaffolder removes `prepare*` and itself. The legacy `prepare`, `prepare.sh`, and `prepare.cmd` files are thin shims that forward all flags to the Node scaffolder, so muscle memory still works.
 
 ### Running the dev environment
 
-#### IntelliJ IDEA
-
-Open the project — IntelliJ picks up the configurations under `.run/`. Run the compound configuration **`spring & npm`** to start the Spring Boot app and the watcher in one click.
-
-#### Other IDEs / plain terminal
-
-Two terminals:
+#### Single terminal (recommended)
 
 ```bash
-# 1. Spring Boot (local profile disables template/static caching and adds request logging)
+npm install        # one-time, installs concurrently as a root dev-dep
+npm run dev        # Spring Boot (local profile) + Tailwind/cpx2/browser-sync, side by side
+```
+
+Browse to **http://localhost:3000** — browser-sync proxies to Spring on `:8080` and reloads the page whenever a watched file changes. `Ctrl-C` once stops both processes.
+
+#### IntelliJ IDEA
+
+Run configurations live under `.run/`. Use the compound **`spring & npm`** to start Spring Boot and the watcher in one click.
+
+#### Two-terminal fallback
+
+```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 ```bash
-# 2. Tailwind + asset watcher + browser-sync proxy
 cd node && npm run dev
 ```
-
-Browse to **http://localhost:3000** — browser-sync proxies to Spring on `:8080` and reloads the page whenever a watched file changes.
 
 ### Building for production
 
@@ -180,6 +193,18 @@ node/
 - `./mvnw verify` runs unit + integration tests, then the Jacoco line-coverage rule (≥ 70%, excluding `Application.class`).
 - The GitHub Actions workflow at [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the same on every push and PR, uploads the Jacoco HTML report as an artifact, and pushes coverage to Codecov.
 - [Dependabot](.github/dependabot.yml) opens grouped PRs weekly for Maven (Spring + testing groups) and monthly for GitHub Actions and npm.
+
+## Roadmap / known rough edges
+
+Honest list of what could still be smoother — open to PRs:
+
+- **Single root command for everything.** `npm run dev` already wraps spring-boot:run + asset watcher; could extend to a `make`-style facade (`make dev / test / image`) for non-npm folks.
+- **Workflow badge URL aliases.** The scaffolder rewrites `havlli/bootleaf-starter` → `<owner>/<repo>` in the README, but Codecov stays grey until the user actually wires Codecov for their fork. Worth a `--no-codecov` flag that strips that badge.
+- **Per-IDE run configs.** Only IntelliJ `.run/` ships. VS Code `launch.json` and a JetBrains Fleet equivalent would lift the IDE-specific tax.
+- **Docker Compose for collaborators without JDK 21.** A 10-line `compose.yaml` with the OCI image and a Caddy proxy would let teammates `docker compose up` and demo the patterns page without installing Java.
+- **Test data builders.** The `MessageForm` validation is well-covered, but as the project grows a `*Fixtures` builder pattern (or `instancio`) keeps test setup terse.
+- **Pre-commit hooks.** A `lefthook.yml` running `./mvnw -q -DskipITs test` + a fast formatter (`prettier` for templates, `palantir-java-format`) would catch regressions before push.
+- **`./prepare --template` modes.** Future work could ship preset profiles ("api-only" strips Thymeleaf/Tailwind, "fullstack" leaves everything as-is).
 
 ## Contributions
 
