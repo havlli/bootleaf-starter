@@ -37,6 +37,10 @@ build/
 /node/package-lock.json
 /node/node/
 
+### Root npm convenience runner ###
+/node_modules/
+/package-lock.json
+
 .DS_Store
 .claude/
 

@@ -1,13 +1,8 @@
 #!/bin/sh
-
-# Detect the operating system
+# Thin shim — the real scaffolder is scripts/scaffold.mjs (Node 20+).
+# Forwards every argument so flags like --dry-run / --keep-git work transparently.
+set -e
 case "$(uname -s)" in
-    CYGWIN*|MINGW32*|MSYS*|MINGW*)
-        # Windows systems detected, run Batch script
-        cmd.exe /c prepare.cmd
-        ;;
-    *)
-        # Unix-like system detected, run Bash script
-        ./prepare.sh
-        ;;
+    CYGWIN*|MINGW32*|MSYS*|MINGW*) cmd.exe /c "prepare.cmd $*" ;;
+    *) exec ./prepare.sh "$@" ;;
 esac

@@ -1,0 +1,21 @@
+{
+  "name": "bootleaf-starter-root",
+  "private": true,
+  "description": "Root convenience scripts so contributors don't need a second terminal.",
+  "scripts": {
+    "dev": "concurrently -n spring,assets -c green,cyan \"npm:dev:spring\" \"npm:dev:assets\"",
+    "dev:spring": "./mvnw -q spring-boot:run -Dspring-boot.run.profiles=local",
+    "dev:assets": "npm --prefix node run dev",
+    "build": "./mvnw -B -ntp clean verify",
+    "build:prod": "./mvnw -B -ntp -Prelease clean package",
+    "image": "./mvnw -B -ntp spring-boot:build-image",
+    "test": "./mvnw -B -ntp test",
+    "verify": "./mvnw -B -ntp verify",
+    "format:templates": "echo 'no formatter configured yet'",
+    "scaffold": "node scripts/scaffold.mjs",
+    "scaffold:dry": "node scripts/scaffold.mjs --dry-run"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
