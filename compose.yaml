@@ -1,0 +1,54 @@
+name: bootleaf
+
+services:
+  app:
+    image: bootleaf-starter:0.0.1-SNAPSHOT
+    build:
+      context: .
+      dockerfile_inline: |
+        # Pulled in case the user runs `docker compose up --build` before
+        # `./mvnw spring-boot:build-image`. The Spring Boot Maven plugin
+        # produces a richer image (CDS, layered jar) — prefer that for prod.
+        FROM eclipse-temurin:21-jre AS runtime
+        WORKDIR /app
+        COPY target/*.jar /app/app.jar
+        EXPOSE 8080
+        ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+    pull_policy: build
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-default}
+      SERVER_PORT: 8080
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 6
+      start_period: 30s
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      app:
+        condition: service_healthy
+    ports:
+      - "${HTTP_PORT:-8080}:80"
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    restart: unless-stopped
+
+configs:
+  caddyfile:
+    content: |
+      :80 {
+          encode gzip zstd
+          reverse_proxy app:8080 {
+              header_up X-Forwarded-Proto {scheme}
+              header_up X-Forwarded-Host  {host}
+          }
+          @assets path /css/* /js/* /lib/* /images/* /favicon.svg
+          header @assets Cache-Control "public, max-age=31536000, immutable"
+      }

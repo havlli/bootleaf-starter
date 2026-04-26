@@ -1,0 +1,29 @@
+# Install once: `lefthook install` (https://github.com/evilmartians/lefthook)
+# Hooks are skipped automatically on rebase/merge to avoid surprise blocking.
+#
+# Pre-commit is fast: only Java compile + impacted tests. The full verify
+# (Jacoco gate, integration tests, frontend build) runs on pre-push and CI.
+
+pre-commit:
+  parallel: true
+  commands:
+    java-compile:
+      glob: "*.java"
+      run: ./mvnw -B -ntp -q -o test-compile
+      stage_fixed: true
+    properties-format:
+      glob: "src/main/resources/*.properties"
+      run: |
+        for f in {staged_files}; do
+          # warn if non-UTF-8 or trailing whitespace
+          grep -nP '[ \t]+$' "$f" && {
+            echo "trailing whitespace in $f" >&2
+            exit 1
+          } || true
+        done
+
+pre-push:
+  commands:
+    verify:
+      run: ./mvnw -B -ntp verify
+      tags: long
