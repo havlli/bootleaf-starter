@@ -5,20 +5,22 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>4.0.5</version>
+        <relativePath/>
     </parent>
     <groupId>com.github.havlli</groupId>
     <artifactId>bootleaf-starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>BootLeaf Starter</name>
-    <description>Spring Boot and Thymeleaf starter kit including node.js for dev environment, and additional libraries.</description>
+    <description>Spring Boot + Thymeleaf + HTMX + _hyperscript + Tailwind CSS v4 starter with Node-driven dev pipeline.</description>
+
     <properties>
-        <java.version>17</java.version>
-        <frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
-        <frontend-maven-plugin.nodeVersion>v20.14.0</frontend-maven-plugin.nodeVersion>
-        <frontend-maven-plugin.npmVersion>8.1.2</frontend-maven-plugin.npmVersion>
+        <java.version>21</java.version>
+        <frontend-maven-plugin.version>1.15.4</frontend-maven-plugin.version>
+        <frontend-maven-plugin.nodeVersion>v24.15.0</frontend-maven-plugin.nodeVersion>
+        <frontend-maven-plugin.npmVersion>11.12.1</frontend-maven-plugin.npmVersion>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -26,12 +28,28 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -51,6 +69,9 @@
                     <exclude>**/*.gif</exclude>
                     <exclude>**/*.avif</exclude>
                     <exclude>**/*.webp</exclude>
+                    <exclude>**/*.ico</exclude>
+                    <exclude>**/*.woff</exclude>
+                    <exclude>**/*.woff2</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -75,19 +96,15 @@
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <phase>initialize</phase>
-                        <configuration>
-                            <nodeVersion>${frontend-maven-plugin.nodeVersion}</nodeVersion>
-                            <npmVersion>${frontend-maven-plugin.npmVersion}</npmVersion>
-                        </configuration>
                     </execution>
                     <execution>
-                        <id>npm run node setup</id>
+                        <id>npm prepare</id>
                         <phase>initialize</phase>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run setup</arguments>
+                            <arguments>run prepare</arguments>
                         </configuration>
                     </execution>
                     <execution>
@@ -128,7 +145,7 @@
                                     <goal>npm</goal>
                                 </goals>
                                 <configuration>
-                                    <arguments>run build-prod</arguments>
+                                    <arguments>run build:prod</arguments>
                                 </configuration>
                             </execution>
                         </executions>
