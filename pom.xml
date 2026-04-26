@@ -20,7 +20,7 @@
         <frontend-maven-plugin.nodeVersion>v24.15.0</frontend-maven-plugin.nodeVersion>
         <frontend-maven-plugin.npmVersion>11.12.1</frontend-maven-plugin.npmVersion>
         <htmx-spring-boot.version>5.1.0</htmx-spring-boot.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <jacoco.version>0.8.14</jacoco.version>
         <jacoco.coverage.line>0.70</jacoco.coverage.line>
     </properties>
 
