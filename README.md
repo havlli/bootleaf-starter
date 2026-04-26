@@ -10,7 +10,11 @@
 
 An opinionated, modern starter for building **server-rendered web applications** with Spring Boot, Thymeleaf, HTMX, _hyperscript, and Tailwind CSS — without the SPA tax.
 
-Designed to be cloned, scaffolded with the included `prepare` script, and made your own.
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/havlli/bootleaf-starter/master/scripts/create.sh) my-app
+```
+
+That single line clones, scaffolds (your group/artifact/version), installs the dev runner, and gives you a fresh git history. See [One-command bootstrap](#one-command-bootstrap) below for the non-interactive variant and full flag list.
 
 ## Stack
 
@@ -257,6 +261,17 @@ node/
 | `/patterns/note/{id}`   | HTMX `GET`/`POST` — inline-edit pattern for a note store            |
 | `/actuator/health`      | Health probe (Kubernetes-friendly)                                  |
 | `/actuator/info`        | Build & app metadata (custom `info.app.*` keys)                     |
+
+## Security posture
+
+Out of the box this starter ships **no authentication, no authorization, and no CSRF protection** — Spring Security is intentionally not on the classpath, because adding it without an opinion (form login? OAuth2? JWT?) would force the wrong choice on you. The HTMX patterns page exists to demo client-server interactions, not to be deployed user-facing as-is.
+
+Before exposing this to the public internet:
+
+1. Add `spring-boot-starter-security` and configure CSRF (the HTMX form posts will need the `_csrf` token surfaced into headers — `htmx-spring-boot` has helpers for this).
+2. Lock down the actuator: `management.endpoints.web.exposure.include` is currently `health,info`; review the Spring Boot Actuator docs before exposing more.
+3. `info.app.*` keys are surfaced via `/actuator/info` — keep nothing sensitive in `application.properties` under that prefix.
+4. Configure rate limiting / request-size limits / CORS at the reverse-proxy layer (Caddy in `compose.yaml`, or your platform).
 
 ## Quality gates
 
