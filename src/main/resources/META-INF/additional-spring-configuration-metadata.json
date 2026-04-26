@@ -1,0 +1,21 @@
+{
+  "groups": [
+    {
+      "name": "info.app",
+      "type": "java.util.Map",
+      "description": "Custom application metadata exposed at /actuator/info."
+    }
+  ],
+  "properties": [
+    {
+      "name": "info.app.name",
+      "type": "java.lang.String",
+      "description": "Display name shown in /actuator/info."
+    },
+    {
+      "name": "info.app.description",
+      "type": "java.lang.String",
+      "description": "Short description shown in /actuator/info."
+    }
+  ]
+}
