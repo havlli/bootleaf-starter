@@ -56,11 +56,42 @@ function parseArgs(argv) {
 }
 
 const args = parseArgs(process.argv.slice(2));
+if (args.help || args.h) {
+    console.log(`BootLeaf Starter scaffolder
+
+Usage: node scripts/scaffold.mjs [flags]
+
+Project metadata (prompted if absent, required with --yes):
+  --group-id <id>          e.g. com.acme
+  --artifact-id <id>       e.g. widget-service
+  --version <ver>          e.g. 0.0.1-SNAPSHOT
+  --name "<display>"       e.g. "Widget Service"
+  --github-owner <owner>   used to rewrite README badge URLs
+  --github-repo <repo>     used to rewrite README badge URLs
+
+Flags:
+  --dry-run                preview every move/write, change nothing
+  --yes, -y                non-interactive (combine with metadata flags)
+  --keep-git               preserve existing .git history
+  --skip-verify            skip the trailing ./mvnw verify
+  --skip-badge-rewrite     leave README badge URLs untouched
+  --no-codecov             strip the Codecov badge entirely from README
+  --template <kind>        'fullstack' (default) or 'api-only' (no thymeleaf/htmx/tailwind/node)
+  --help, -h               show this help
+`);
+    exit(0);
+}
 const DRY = !!args["dry-run"];
 const YES = !!args.yes || !!args.y;
 const KEEP_GIT = !!args["keep-git"];
 const SKIP_VERIFY = !!args["skip-verify"];
 const SKIP_BADGE_REWRITE = !!args["skip-badge-rewrite"];
+const NO_CODECOV = !!args["no-codecov"];
+const TEMPLATE = (args.template || "fullstack").toLowerCase();
+if (!["fullstack", "api-only"].includes(TEMPLATE)) {
+    console.error(`[ERR] --template must be 'fullstack' or 'api-only', got '${TEMPLATE}'`);
+    exit(1);
+}
 
 // -------------------- helpers --------------------
 
@@ -205,6 +236,8 @@ function summarize(meta) {
         ["Display name", meta.name],
         ["Root package", `${meta.groupId}.${packageFromArtifact(meta.artifactId)}`],
         ["GitHub", `${meta.githubOwner}/${meta.githubRepo}`],
+        ["Template", TEMPLATE],
+        ["Codecov badge", NO_CODECOV ? "stripped" : "kept"],
         ["Keep .git history", String(KEEP_GIT)],
         ["Skip mvnw verify", String(SKIP_VERIFY)],
         ["Mode", DRY ? "dry-run (no writes)" : "apply"],
@@ -281,21 +314,158 @@ function rewriteFiles(meta) {
         if (before !== after) writeIfChanged(f, after);
     }
 
-    // 6. README badge URLs + project name
+    // 6. README badge URLs + project name + optional Codecov strip
     if (!SKIP_BADGE_REWRITE) {
         const readmePath = join(ROOT, "README.md");
         if (existsSync(readmePath)) {
             let r = readFile(readmePath);
             r = r.replaceAll(oldOwnerRepo, newOwnerRepo);
             r = r.replace(/^# BootLeaf Starter$/m, `# ${meta.name}`);
+            if (NO_CODECOV) {
+                r = r.replace(/^\[!\[codecov\][^\n]*\n/m, "");
+            }
             writeIfChanged(readmePath, r);
         }
     }
 
-    // 7. .github/workflows/* — branch name stays, but badge URL alignment is via README
-    //    No workflow content changes needed; user can adjust later.
+    // 7. Template-specific surgery
+    if (TEMPLATE === "api-only") applyApiOnlyTemplate(meta);
+}
 
-    // 8. Spring Boot Maven plugin image name uses ${project.artifactId} already — nothing to do.
+function applyApiOnlyTemplate(meta) {
+    header("Applying api-only template");
+    const newRootPackage = `${meta.groupId}.${packageFromArtifact(meta.artifactId)}`;
+    const newPackagePath = newRootPackage.replaceAll(".", sep);
+
+    // Strip the frontend pipeline + view-rendering deps from pom.xml
+    const pomPath = join(ROOT, "pom.xml");
+    let pom = readFile(pomPath);
+    const drop = (re, label) => {
+        const next = pom.replace(re, "");
+        if (next !== pom) console.log(`  ${C.dim}strip${C.reset} ${label}`);
+        pom = next;
+    };
+    // Keep spring-boot-starter-webmvc + spring-boot-starter-webmvc-test:
+    // webmvc is the canonical SB4 servlet starter; webmvc-test gives us @WebMvcTest.
+    drop(/\s*<dependency>\s*<groupId>org\.springframework\.boot<\/groupId>\s*<artifactId>spring-boot-starter-thymeleaf<\/artifactId>\s*<\/dependency>/g, "spring-boot-starter-thymeleaf");
+    drop(/\s*<dependency>\s*<groupId>io\.github\.wimdeblauwe<\/groupId>\s*<artifactId>htmx-spring-boot[^<]*<\/artifactId>\s*<version>[^<]+<\/version>\s*<\/dependency>/g, "htmx-spring-boot(-thymeleaf)");
+    drop(/\s*<htmx-spring-boot\.version>[^<]+<\/htmx-spring-boot\.version>/g, "htmx-spring-boot.version property");
+    // Drop the entire frontend-maven-plugin block + the resources <excludes> for HTML/CSS/etc.
+    drop(/\s*<plugin>\s*<groupId>com\.github\.eirslett<\/groupId>[\s\S]*?<\/plugin>/g, "frontend-maven-plugin");
+    drop(/\s*<resources>[\s\S]*?<\/resources>/g, "frontend resource excludes");
+    drop(/\s*<frontend-maven-plugin\.[^>]+>[^<]+<\/frontend-maven-plugin\.[^>]+>/g, "frontend-maven-plugin properties");
+    drop(/\s*<profile>\s*<id>release<\/id>[\s\S]*?<\/profile>/g, "release profile (frontend prod)");
+    // Replace project description with an api-focused one
+    pom = pom.replace(
+        /<description>[^<]*<\/description>/,
+        `<description>${meta.name} — JSON API on Spring Boot 4, Java 21.</description>`
+    );
+    writeIfChanged(pomPath, pom);
+
+    // Remove frontend folders + templates + static
+    for (const dir of ["node", "src/main/resources/templates", "src/main/resources/static"]) {
+        const p = join(ROOT, dir);
+        if (existsSync(p)) {
+            console.log(`  ${C.dim}rm -rf${C.reset} ${dir}`);
+            if (!DRY) rmSync(p, { recursive: true, force: true });
+        }
+    }
+
+    // Drop view + form classes; we'll write a tiny REST controller in their place.
+    const drops = [
+        `src/main/java/${newPackagePath}/controller/HomeController.java`,
+        `src/main/java/${newPackagePath}/controller/WebController.java`,
+        `src/main/java/${newPackagePath}/web/MessageForm.java`,
+        `src/main/java/${newPackagePath}/config/RequestLoggingConfig.java`,
+        `src/test/java/${newPackagePath}/ErrorPagesIntegrationTest.java`,
+        `src/test/java/${newPackagePath}/controller/HomeControllerTest.java`,
+        `src/test/java/${newPackagePath}/controller/WebControllerTest.java`,
+        `src/test/java/${newPackagePath}/web/MessageFormValidationTest.java`,
+    ];
+    for (const rel of drops) {
+        const p = join(ROOT, rel);
+        if (existsSync(p)) {
+            console.log(`  ${C.dim}rm${C.reset} ${rel}`);
+            if (!DRY) unlinkSync(p);
+        }
+    }
+    if (!DRY) {
+        for (const sub of ["controller", "web", "config"]) {
+            pruneEmptyUp(join(ROOT, "src/main/java", newPackagePath, sub), join(ROOT, "src/main/java"));
+            pruneEmptyUp(join(ROOT, "src/test/java", newPackagePath, sub), join(ROOT, "src/test/java"));
+        }
+    }
+
+    // Write a minimal /api/ping REST controller + slice test
+    const restCtrl = `package ${newRootPackage}.api;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api")
+class PingController {
+
+    @GetMapping("/ping")
+    Map<String, Object> ping() {
+        return Map.of("status", "ok", "ts", Instant.now().toString());
+    }
+}
+`;
+    const restTest = `package ${newRootPackage}.api;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(PingController.class)
+class PingControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    void ping_returnsOkStatus() throws Exception {
+        mockMvc.perform(get("/api/ping"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("\\"status\\":\\"ok\\"")));
+    }
+}
+`;
+    const ctrlPath = join(ROOT, "src/main/java", newPackagePath, "api/PingController.java");
+    const testPath = join(ROOT, "src/test/java", newPackagePath, "api/PingControllerTest.java");
+    writeIfChanged(ctrlPath, restCtrl);
+    writeIfChanged(testPath, restTest);
+
+    // Strip the dev request logging properties added under [local]
+    const localProps = join(ROOT, "src/main/resources/application-local.properties");
+    if (existsSync(localProps)) {
+        let p = readFile(localProps);
+        p = p.replace(/# Disable caching[\s\S]*?spring\.web\.resources\.chain\.strategy\.content\.enabled=false\s*/, "");
+        writeIfChanged(localProps, p);
+    }
+
+    // README: replace Tailwind/HTMX badges + features with an api-only blurb
+    const readmePath = join(ROOT, "README.md");
+    if (existsSync(readmePath)) {
+        let r = readFile(readmePath);
+        r = r.replace(/\[!\[Tailwind CSS v4\][^\n]*\n/, "");
+        r = r.replace(/\[!\[HTMX 2\][^\n]*\n/, "");
+        r = r.replace(/^An opinionated[^\n]+\n/m, "An opinionated, modern starter for building **JSON APIs** with Spring Boot 4 on Java 21 — JPA-ready, Actuator-equipped, Jacoco-gated.\n");
+        writeIfChanged(readmePath, r);
+    }
+
+    log("ok", "api-only template applied — Thymeleaf/HTMX/Tailwind/Node pipeline removed");
 }
 
 function gitReset(meta) {
