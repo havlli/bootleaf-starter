@@ -490,10 +490,10 @@ function gitReset(meta) {
 
 function cleanupSelf() {
     if (DRY) {
-        console.log(`  ${dryNote()}${C.dim}rm${C.reset} prepare prepare.sh prepare.cmd HELP.md scripts/scaffold.mjs`);
+        console.log(`  ${dryNote()}${C.dim}rm${C.reset} prepare prepare.sh prepare.cmd HELP.md scripts/scaffold.mjs scripts/create.sh`);
         return;
     }
-    const toRemove = ["prepare", "prepare.sh", "prepare.cmd", "HELP.md", "scripts/scaffold.mjs"];
+    const toRemove = ["prepare", "prepare.sh", "prepare.cmd", "HELP.md", "scripts/scaffold.mjs", "scripts/create.sh"];
     for (const f of toRemove) {
         const p = join(ROOT, f);
         if (existsSync(p)) unlinkSync(p);

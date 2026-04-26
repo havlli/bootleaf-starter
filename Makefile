@@ -3,7 +3,7 @@ SHELL := /usr/bin/env bash
 
 MVN := ./mvnw -B -ntp
 
-.PHONY: help dev test verify build image clean scaffold scaffold-dry up down logs hooks
+.PHONY: help dev test verify build image clean scaffold scaffold-dry create up down logs hooks
 
 help: ## list targets
 	@awk 'BEGIN {FS = ":.*##"; printf "Targets:\n"} /^[a-zA-Z0-9_-]+:.*##/ { printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -30,6 +30,10 @@ scaffold: ## interactive scaffold
 
 scaffold-dry: ## preview scaffold rewrites without changing anything
 	@./prepare --dry-run
+
+create: ## one-command bootstrap: make create DIR=my-app [ARGS='--yes --template api-only ...']
+	@if [ -z "$(DIR)" ]; then echo 'usage: make create DIR=my-app [ARGS=...]'; exit 1; fi
+	@bash scripts/create.sh $(DIR) $(ARGS)
 
 up: ## docker compose up (builds the OCI image first if needed)
 	@if [ ! -f target/*.jar ] 2>/dev/null; then $(MVN) -DskipTests package; fi

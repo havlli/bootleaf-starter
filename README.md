@@ -56,7 +56,28 @@ mise install  # provisions Temurin 21, Maven 3.9.15, Node 24.15.0
 
 `mise` will then auto-set `JAVA_HOME`, `MAVEN_HOME`, and `PATH` whenever you `cd` into the project. The Maven wrapper (`./mvnw`) and `frontend-maven-plugin` continue to work as a fallback for contributors who don't use a version manager — `frontend-maven-plugin` will download Node 24 / npm 11 on demand.
 
-### Cloning and scaffolding
+### One-command bootstrap
+
+The fastest path: a single line that clones, scaffolds, installs the root npm runner, and `git init`s a fresh history. Interactive (asks for groupId / artifactId / etc.):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/havlli/bootleaf-starter/master/scripts/create.sh) my-app
+```
+
+Fully non-interactive — every prompt answered up front:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/havlli/bootleaf-starter/master/scripts/create.sh) my-app \
+  --yes --template api-only --no-codecov \
+  --group-id com.acme --artifact-id myapp --version 1.0.0 \
+  --name "My App" --github-owner acme --github-repo myapp
+```
+
+When you're done you have a green-build project: `cd my-app && npm run dev`.
+
+> Prefer not to pipe `curl` into a shell? `git clone` then `bash scripts/create.sh ../my-app …` does the same thing locally; or use the manual flow below.
+
+### Manual cloning and scaffolding
 
 > Run scaffolding in a plain terminal **before** opening the project in an IDE — IntelliJ will eagerly write `.idea/` metadata that fights the rename.
 
