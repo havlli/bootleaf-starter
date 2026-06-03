@@ -16,6 +16,6 @@
     "scaffold:dry": "node scripts/scaffold.mjs --dry-run"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "concurrently": "^10.0.3"
   }
 }
